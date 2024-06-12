@@ -13,6 +13,6 @@ const JugadorSchema = new mongoose.Schema({
     }
 })
 
-const Jugador = mongoose.model(JugadorSchema, 'Jugador');
+const Jugador = mongoose.model('Jugador', JugadorSchema); // Estaba al revez.
 
 module.exports = Jugador;
