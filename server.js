@@ -1,19 +1,33 @@
-// TODO: Se agrego, ruta, controlador y modelo de Jugador. 
-
-// Imports
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
+const RoutesJugador = require('./routes/jugador.routes')
 const app = express();
-const port = 8000;
-const RutaJugador = require('./routes/jugador.routes')
+const socketIo= require('socket.io')
+const server= require('http').createServer(app)
+const io= socketIo(server, { cors: { origin: '*' } })
 
-// Filtros y bypass
-app.use( cors() );
-app.use( express.json() );
-app.use( express.urlencoded({ extended: true }) );
+//requerimos la base de datos
+require('./server/config/baseDato');
 
-// Rutas de llamada
-RutaJugador(app);
 
-// Encender Servidor
-app.listen( port, () => console.log(`Servidor encendido en el puerto: ${port}`) );
+
+//Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+//le pasamos la app a nuestra ruta
+RoutesJugador(app);
+
+
+
+
+
+server.listen(8080, () => {
+  console.log("Activo en el puerto 8080");
+});
+
+
+io.on('connection', (socket)=> {
+  console.log("Se conecto un usuario", socket)
+  socket.broadcast.emit("Anuncio", "Llegó alguien mas")
+});
